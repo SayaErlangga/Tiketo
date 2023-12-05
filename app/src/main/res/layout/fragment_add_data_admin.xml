@@ -1,14 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".admin.AddDataFragmentAdmin">
+    tools:context=".admin.AddDataFragmentAdmin"
+    android:padding="20dp">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <EditText
+        android:id="@+id/edt_stasiun_asal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:hint="Masukkan Stasiun Asal"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/edt_stasiun_tujuan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Masukkan Stasiun Tujuan"
+        app:layout_constraintTop_toBottomOf="@+id/edt_stasiun_asal"/>
+
+    <EditText
+        android:id="@+id/edt_harga_stasiun"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Harga"
+        app:layout_constraintTop_toBottomOf="@+id/edt_stasiun_tujuan"/>
+
+    <CheckBox
+        android:id="@+id/fitur_makan_siang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/edt_harga_stasiun"
+        app:layout_constraintTop_toBottomOf="@+id/edt_harga_stasiun" />
+
+    <TextView
+        android:id="@+id/txt_makan_siang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tambah Makan Siang"
+        app:layout_constraintBottom_toBottomOf="@+id/fitur_makan_siang"
+        app:layout_constraintStart_toEndOf="@+id/fitur_makan_siang"
+        app:layout_constraintTop_toBottomOf="@+id/edt_harga_stasiun" />
+    <CheckBox
+        android:id="@+id/fitur_duduk_depan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/fitur_makan_siang"
+        app:layout_constraintTop_toBottomOf="@+id/fitur_makan_siang" />
+
+    <TextView
+        android:id="@+id/txt_duduk_depan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tambah Duduk Depan"
+        app:layout_constraintBottom_toBottomOf="@+id/fitur_duduk_depan"
+        app:layout_constraintStart_toEndOf="@+id/fitur_duduk_depan"
+        app:layout_constraintTop_toBottomOf="@+id/fitur_makan_siang" />
+
+    <Button
+        android:id="@+id/btn_simpan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Simpan"
+        app:layout_constraintTop_toBottomOf="@+id/fitur_duduk_depan"
+        tools:layout_editor_absoluteX="20dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

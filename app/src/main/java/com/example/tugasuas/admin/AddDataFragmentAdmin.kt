@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.tugasuas.R
+import com.example.tugasuas.databinding.FragmentAddDataAdminBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,43 +21,52 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class AddDataFragmentAdmin : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentAddDataAdminBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_data_admin, container, false)
-    }
+        binding = FragmentAddDataAdminBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddDataFragmentAdmin.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddDataFragmentAdmin().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        val firestore = FirebaseFirestore.getInstance()
+        val userCollectionRef = firestore.collection("station")
+
+        binding.btnSimpan.setOnClickListener {
+            // Ambil data dari UI
+            val stasiunAsal = binding.edtStasiunAsal.text.toString()
+            val stasiunTujuan = binding.edtStasiunTujuan.text.toString()
+            val harga = binding.edtHargaStasiun.text.toString()
+
+            // Mendapatkan nilai CheckBox
+            val fiturMakanSiang = binding.fiturMakanSiang.isChecked
+            val fiturDudukDepan = binding.fiturDudukDepan.isChecked
+
+            // Membuat listFitur berdasarkan nilai CheckBox
+            val listFitur = mutableListOf<String>()
+
+            if (fiturMakanSiang) {
+                listFitur.add("Makan Siang")
             }
+
+            if (fiturDudukDepan) {
+                listFitur.add("Duduk Depan")
+            }
+
+            // Buat objek Station
+            val station = Station(id = "", stasiunAsal = stasiunAsal, stasiunTujuan = stasiunTujuan, harga = harga, listFitur = listFitur)
+
+            // Mendapatkan referensi child baru di dalam referensi utama
+            val childReference = userCollectionRef.document()
+
+            // Set nilai objek Station ke dalam database
+            childReference.set(station)
+            findNavController().apply {
+            }.navigateUp()
+        }
+
+        return view
     }
 }
