@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "462768516464",
+    "project_id": "tugasuas-f70b8",
+    "storage_bucket": "tugasuas-f70b8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462768516464:android:aa61093f2edbb3dea933b5",
+        "android_client_info": {
+          "package_name": "com.example.tugasuas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC13BnEsBzKS8KcwimbLT6pUpwxtdfLtgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

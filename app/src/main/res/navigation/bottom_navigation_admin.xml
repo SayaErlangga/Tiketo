@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_navigation_admin"
+    app:startDestination="@id/homeFragmentAdmin">
+
+    <fragment
+        android:id="@+id/homeFragmentAdmin"
+        android:name="com.example.tugasuas.admin.HomeFragmentAdmin"
+        android:label="fragment_home_admin"
+        tools:layout="@layout/fragment_home_admin" >
+        <action
+            android:id="@+id/action_homeFragmentAdmin_to_addDataFragmentAdmin"
+            app:destination="@id/addDataFragmentAdmin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragmentAdmin"
+        android:name="com.example.tugasuas.admin.ProfileFragmentAdmin"
+        android:label="fragment_profile_admin"
+        tools:layout="@layout/fragment_profile_admin" />
+    <fragment
+        android:id="@+id/addDataFragmentAdmin"
+        android:name="com.example.tugasuas.admin.AddDataFragmentAdmin"
+        android:label="fragment_add_data_admin"
+        tools:layout="@layout/fragment_add_data_admin" />
+</navigation>
