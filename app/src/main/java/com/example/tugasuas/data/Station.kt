@@ -1,4 +1,4 @@
-package com.example.tugasuas.admin
+package com.example.tugasuas.data
 
 data class Station(
     var id: String = "",

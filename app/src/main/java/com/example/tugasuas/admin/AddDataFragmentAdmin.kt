@@ -1,13 +1,15 @@
 package com.example.tugasuas.admin
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.tugasuas.R
+import com.example.tugasuas.data.Station
 import com.example.tugasuas.databinding.FragmentAddDataAdminBinding
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -22,7 +24,8 @@ private const val ARG_PARAM2 = "param2"
  */
 class AddDataFragmentAdmin : Fragment() {
     private lateinit var binding: FragmentAddDataAdminBinding
-
+    private val firestore = FirebaseFirestore.getInstance()
+    private val stationCollectionRef = firestore.collection("station")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,42 +34,38 @@ class AddDataFragmentAdmin : Fragment() {
         binding = FragmentAddDataAdminBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val firestore = FirebaseFirestore.getInstance()
-        val userCollectionRef = firestore.collection("station")
+
 
         binding.btnSimpan.setOnClickListener {
             // Ambil data dari UI
             val stasiunAsal = binding.edtStasiunAsal.text.toString()
             val stasiunTujuan = binding.edtStasiunTujuan.text.toString()
-            val harga = binding.edtHargaStasiun.text.toString()
-
-            // Mendapatkan nilai CheckBox
-            val fiturMakanSiang = binding.fiturMakanSiang.isChecked
-            val fiturDudukDepan = binding.fiturDudukDepan.isChecked
-
-            // Membuat listFitur berdasarkan nilai CheckBox
+            val harga = binding.edtHarga.text.toString()
             val listFitur = mutableListOf<String>()
 
-            if (fiturMakanSiang) {
-                listFitur.add("Makan Siang")
+            for (buttonId in binding.toggleButtonGroup.checkedButtonIds) {
+                val button: MaterialButton = view.findViewById(buttonId)
+                listFitur.add(button.text.toString())
             }
-
-            if (fiturDudukDepan) {
-                listFitur.add("Duduk Depan")
-            }
-
             // Buat objek Station
-            val station = Station(id = "", stasiunAsal = stasiunAsal, stasiunTujuan = stasiunTujuan, harga = harga, listFitur = listFitur)
+            val station = Station(stasiunAsal = stasiunAsal, stasiunTujuan = stasiunTujuan, listFitur = listFitur, harga = harga)
 
-            // Mendapatkan referensi child baru di dalam referensi utama
-            val childReference = userCollectionRef.document()
-
-            // Set nilai objek Station ke dalam database
-            childReference.set(station)
+            newStation(station)
             findNavController().apply {
             }.navigateUp()
         }
-
         return view
+    }
+    private fun newStation(station: Station) {
+        stationCollectionRef.add(station).addOnSuccessListener {
+                documentReference ->
+            val createdStationId = documentReference.id
+            station.id = createdStationId
+            documentReference.set(station).addOnFailureListener {
+                Log.d("Main Activity", "Error updataing station id: ", it)
+            }
+        }.addOnFailureListener {
+            Log.d("Main Activity", "Error adding station id: ", it)
+        }
     }
 }

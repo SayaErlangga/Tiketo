@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".admin.DashboardAdmin">
+    tools:context=".admin.DashboardAdmin"
+    android:background="@color/white">
     <fragment
         android:id="@+id/nav_host_fragment_admin"
         android:layout_width="match_parent"
@@ -20,5 +21,8 @@
         android:id="@+id/bottom_navigation_view"
         android:layout_gravity = "bottom"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_menu_admin"/>
+        app:menu="@menu/bottom_navigation_menu_admin"
+        android:background="@color/sky_blue"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

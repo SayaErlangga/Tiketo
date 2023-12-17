@@ -9,7 +9,11 @@
         android:id="@+id/homeFragment"
         android:name="com.example.tugasuas.user.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_buyTicket"
+            app:destination="@id/buyTicket" />
+    </fragment>
     <fragment
         android:id="@+id/ticketFragment"
         android:name="com.example.tugasuas.user.TicketFragment"
@@ -20,4 +24,9 @@
         android:name="com.example.tugasuas.user.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/buyTicket"
+        android:name="com.example.tugasuas.user.BuyTicket"
+        android:label="fragment_buy_ticket"
+        tools:layout="@layout/fragment_buy_ticket" />
 </navigation>

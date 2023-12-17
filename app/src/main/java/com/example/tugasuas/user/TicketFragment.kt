@@ -1,60 +1,97 @@
 package com.example.tugasuas.user
 
+import StationAdapter
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.tugasuas.R
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tugasuas.data.Order
+import com.example.tugasuas.data.Station
+import com.example.tugasuas.databinding.FragmentTicketBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TicketFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TicketFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private lateinit var binding: FragmentTicketBinding
+    private val firestore = FirebaseFirestore.getInstance()
+    private val orderCollectionRef = firestore.collection("order")
+    private lateinit var orderAdapter: OrderAdapter
+    private val orderListLiveData: MutableLiveData<List<Order>> by lazy {
+        MutableLiveData<List<Order>>()
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ticket, container, false)
+        binding = FragmentTicketBinding.inflate(inflater, container, false)
+        // Inflate the layout for this fragment
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TicketFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TicketFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        with(binding) {
+            orderAdapter = OrderAdapter(onClickMember = { station ->
+                // Handle item click
+            }, isAdmin = true)
+
+            // Set the delete click listener for the OrderAdapter
+            orderAdapter.setOnDeleteClickListener { order ->
+                deleteOrder(order)
+            }
+
+            rvOrder.layoutManager = LinearLayoutManager(context)
+            rvOrder.adapter = orderAdapter
+        }
+
+        observeOrder()
+        getAllOrder()
+    }
+    private  fun getAllOrder() {
+        observeOrderChanges()
+    }
+
+    private fun observeOrderChanges() {
+        orderCollectionRef.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.d("MainActivity", "Error Listening for order changes: ", error)
+                return@addSnapshotListener
+            }
+            val orders = snapshot?.toObjects(Order::class.java)
+            orderListLiveData.value = orders
+        }
+    }
+
+
+    private fun observeOrder(){
+        orderListLiveData.observe(viewLifecycleOwner){
+                stations ->
+            orderAdapter.submitList(stations)
+        }
+    }
+
+    private fun deleteOrder(order: Order) {
+        if (order.id.isEmpty()) {
+            Log.d("TicketFragment", "Error deleting order: Order Id is empty")
+            return
+        }
+
+        // Show confirmation dialog
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Order")
+            .setMessage("Are you sure you want to delete this order?")
+            .setPositiveButton("Delete") { dialog, which ->
+                // User confirmed, proceed with deletion
+                orderCollectionRef.document(order.id).delete().addOnFailureListener {
+                    Log.d("TicketFragment", "Error deleting order", it)
                 }
             }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }
