@@ -42,7 +42,7 @@ class LoginFragment : Fragment() {
                 if (username.isNotEmpty() && password.isNotEmpty()) {
                     loginUser(username, password)
                 } else {
-                    Toast.makeText(requireContext(), "Masukkan Username dan Password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please input username and password", Toast.LENGTH_SHORT).show()
                 }
             }
             btnToRegister.setOnClickListener {
@@ -87,7 +87,7 @@ class LoginFragment : Fragment() {
 
                             val sharedPreferenceCheckbox = binding.checkboxSp
                             if(sharedPreferenceCheckbox.isChecked){
-                                sharedPreferenceManager.saveLoginDetails(username, password, user.role)
+                                sharedPreferenceManager.saveLoginDetails(username, password, user.role, user.email, user.phone)
                                 redirectToDashboard(user.role)
                             } else {
                                 redirectToDashboard(user.role)
@@ -103,6 +103,7 @@ class LoginFragment : Fragment() {
                         }
                     }
                 } else {
+                    // Move the Toast statement here
                     Toast.makeText(
                         requireContext(),
                         "Username tidak ditemukan",
@@ -119,4 +120,5 @@ class LoginFragment : Fragment() {
                 ).show()
             }
     }
+
 }

@@ -7,5 +7,6 @@ data class Order(
     var harga: String = "",
     var tanggal: String = "",
     var kelas: String = "",
+    var user: String? = null,
     var listFitur: List<String> = mutableListOf()
 )

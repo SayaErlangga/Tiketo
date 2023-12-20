@@ -7,7 +7,7 @@
     <item
         android:id="@+id/ticketFragment"
         android:icon="@drawable/baseline_list_24"
-        android:title="Ticket"/>
+        android:title="Order"/>
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/baseline_account_circle_24"

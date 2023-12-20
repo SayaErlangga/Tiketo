@@ -23,10 +23,19 @@
         android:id="@+id/profileFragment"
         android:name="com.example.tugasuas.user.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_favoriteFragment"
+            app:destination="@id/favoriteFragment" />
+    </fragment>
     <fragment
         android:id="@+id/buyTicket"
         android:name="com.example.tugasuas.user.BuyTicket"
         android:label="fragment_buy_ticket"
         tools:layout="@layout/fragment_buy_ticket" />
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.tugasuas.user.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
 </navigation>

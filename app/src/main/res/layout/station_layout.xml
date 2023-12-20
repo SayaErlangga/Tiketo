@@ -81,7 +81,16 @@
     </LinearLayout>
 
 
-
+    <ImageButton
+        android:id="@+id/btn_delete_favorite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="gone"
+        android:src="@drawable/icon_trash"
+        android:background="@color/sky_blue"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
     <LinearLayout

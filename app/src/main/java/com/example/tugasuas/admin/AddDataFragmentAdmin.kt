@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.example.tugasuas.data.Station
 import com.example.tugasuas.databinding.FragmentAddDataAdminBinding
@@ -30,6 +32,9 @@ class AddDataFragmentAdmin : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Add Travel"
+        setHasOptionsMenu(true) // Add this line
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // Inflate the layout for this fragment
         binding = FragmentAddDataAdminBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -67,5 +72,15 @@ class AddDataFragmentAdmin : Fragment() {
         }.addOnFailureListener {
             Log.d("Main Activity", "Error adding station id: ", it)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().navigateUp()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

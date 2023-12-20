@@ -7,19 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import com.example.tugasuas.MainActivity
+import com.example.tugasuas.R
 import com.example.tugasuas.databinding.FragmentProfileBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
@@ -29,10 +22,15 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Profile"
 
         sharedPreferenceManager = SharedPreferenceManager(requireContext())
 
         with(binding) {
+            // Retrieve user data from SharedPreferences
+            val userEmail = sharedPreferenceManager.getUserEmail()
+            val userName = sharedPreferenceManager.getSavedUserName()
+            val userPhone = sharedPreferenceManager.getSavedUserPhone()
             btnLogout.setOnClickListener {
                 sharedPreferenceManager.clearLoginDetails()
 
@@ -41,6 +39,16 @@ class ProfileFragment : Fragment() {
                 startActivity(intent)
                 requireActivity().finish()
             }
+            btnFavorite.setOnClickListener {
+//                findNavController().navigate(R.id.action_profileFragment_to_favoriteFragment)
+                val intent = Intent(context, FavoriteActivity::class.java)
+                startActivity(intent)
+            }
+            // Set user data to TextViews
+            binding.txtName.text = userName
+            binding.txtEmail.text = userEmail
+            binding.txtPhone.text = userPhone
+
         }
 
         return binding.root

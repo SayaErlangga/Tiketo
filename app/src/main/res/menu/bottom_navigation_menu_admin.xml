@@ -5,6 +5,10 @@
         android:icon="@drawable/baseline_home_24"
         android:title="Home" />
     <item
+        android:id="@+id/addAdminFragment"
+        android:icon="@drawable/baseline_list_24"
+        android:title="User" />
+    <item
         android:id="@+id/profileFragmentAdmin"
         android:icon="@drawable/baseline_account_circle_24"
         android:title="Profile"/>

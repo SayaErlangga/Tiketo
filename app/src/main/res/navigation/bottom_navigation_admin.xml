@@ -25,4 +25,9 @@
         android:name="com.example.tugasuas.admin.AddDataFragmentAdmin"
         android:label="fragment_add_data_admin"
         tools:layout="@layout/fragment_add_data_admin" />
+    <fragment
+        android:id="@+id/addAdminFragment"
+        android:name="com.example.tugasuas.admin.AddAdminFragment"
+        android:label="fragment_add_admin"
+        tools:layout="@layout/fragment_add_admin" />
 </navigation>

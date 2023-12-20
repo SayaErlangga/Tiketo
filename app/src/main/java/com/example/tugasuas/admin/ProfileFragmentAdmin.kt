@@ -7,19 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.example.tugasuas.MainActivity
 import com.example.tugasuas.databinding.FragmentProfileAdminBinding
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragmentAdmin.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileFragmentAdmin : Fragment() {
     private lateinit var binding: FragmentProfileAdminBinding
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
@@ -28,10 +18,14 @@ class ProfileFragmentAdmin : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Profile"
         binding = FragmentProfileAdminBinding.inflate(inflater, container, false)
         sharedPreferenceManager = SharedPreferenceManager(requireContext())
 
         with(binding){
+            val userEmail = sharedPreferenceManager.getUserEmail()
+            val userName = sharedPreferenceManager.getSavedUserName()
+            val userPhone = sharedPreferenceManager.getSavedUserPhone()
             btnLogout.setOnClickListener {
                 sharedPreferenceManager.clearLoginDetails()
 
@@ -39,6 +33,9 @@ class ProfileFragmentAdmin : Fragment() {
                 startActivity(intent)
                 requireActivity().finish()
             }
+            binding.txtName.text = userName
+            binding.txtEmail.text = userEmail
+            binding.txtPhone.text = userPhone
         }
 
         return binding.root

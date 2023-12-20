@@ -1,5 +1,7 @@
 package com.example.tugasuas.user
 
+import SharedPreferenceManager
+import android.Manifest
 import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -10,9 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
-import android.widget.PopupMenu
-import android.R
+import com.example.tugasuas.R
+import android.R as AndroidResources
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import android.view.MenuItem
 import android.widget.AdapterView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.tugasuas.data.Order
 import com.example.tugasuas.data.Station
 import com.example.tugasuas.databinding.FragmentBuyTicketBinding
@@ -21,22 +33,30 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
 class BuyTicket : Fragment() {
-
     private lateinit var binding: FragmentBuyTicketBinding
     private var basePrice: Int = 0
     private val firestore = FirebaseFirestore.getInstance()
     private val stationCollectionRef = firestore.collection("station")
     private val orderCollectionRef = firestore.collection("order")
+    private lateinit var sharedPreferenceManager: SharedPreferenceManager
     private val kelasPriceMap = mapOf(
         "Ekonomi" to 0,
         "Bisnis" to 50000,
         "Eksekutif" to 100000
     )
+    companion object {
+        private const val CHANNEL_ID = "com.example.tugasuas.notification.channel"
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentBuyTicketBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true) // Add this line
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        sharedPreferenceManager = SharedPreferenceManager(requireContext()) // Initialize the sharedPreferenceManager
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Buy Ticket"
+
 
         // Mengambil data dari argumen
         val stasiunAsal = arguments?.getString("stasiunAsal")
@@ -82,7 +102,7 @@ class BuyTicket : Fragment() {
             txtStasiunTujuan.text = stasiunTujuan
             txtHarga.text = harga ?: "0"  // Pastikan harga tidak null, jika null, gunakan "0"
 
-            val adapterKelas = ArrayAdapter<String>(requireContext(), R.layout.simple_spinner_item, kelas)
+            val adapterKelas = ArrayAdapter<String>(requireContext(), AndroidResources.layout.simple_spinner_item, kelas)
             spinnerKelas.adapter = adapterKelas
 
             binding.spinnerKelas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -113,6 +133,7 @@ class BuyTicket : Fragment() {
                 val tanggal = txtTanggal.text.toString()
                 val listFitur = mutableListOf<String>()
                 val selectedKelas = spinnerKelas.selectedItem.toString()
+                val userEmail = retrieveUserEmailFromSharedPreferences()
 
                 view?.let { nonNullView ->
                     for (buttonId in binding.toggleButtonGroup.checkedButtonIds) {
@@ -123,9 +144,10 @@ class BuyTicket : Fragment() {
                     }
                 }
 
-                val order = Order(stasiunAsal = stasiunAsal, stasiunTujuan = stasiunTujuan, harga = harga, listFitur = listFitur, tanggal = tanggal, kelas = selectedKelas)
+                val order = Order(stasiunAsal = stasiunAsal, stasiunTujuan = stasiunTujuan, harga = harga, listFitur = listFitur, tanggal = tanggal, kelas = selectedKelas, user = userEmail)
 
                 newOrder(order)
+                showNotification(stasiunAsal, stasiunTujuan)
                 findNavController().apply {
                 }.navigateUp()
             }
@@ -202,5 +224,63 @@ class BuyTicket : Fragment() {
 
         datePickerDialog.show()
     }
+    private fun retrieveUserEmailFromSharedPreferences(): String? {
+        // Assuming you have a method like this in SharedPreferenceManager
+        return sharedPreferenceManager.getUserEmail()
+    }
 
+    private fun showNotification(stasiunAsal: String?, stasiunTujuan: String?) {
+        createNotificationChannel()
+
+        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.icon_pin_end) // Replace with your app's icon
+            .setContentTitle("Order Successfully")
+            .setContentText("Order from $stasiunAsal to $stasiunTujuan already success")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        with(NotificationManagerCompat.from(requireContext())) {
+            val notificationManager = NotificationManagerCompat.from(requireContext())
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+            notificationManager.notify(1, builder.build())
+        }
+    }
+
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Order Notifications"
+            val descriptionText = "Channel for order notifications"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().navigateUp()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }

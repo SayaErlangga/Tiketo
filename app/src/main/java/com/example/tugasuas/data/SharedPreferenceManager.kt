@@ -7,15 +7,19 @@ class SharedPreferenceManager(context: Context) {
     companion object {
         const val USERNAME_KEY = "username"
         const val PASSWORD_KEY = "password"
+        const val EMAIL_KEY = "email"
+        const val PHONE_KEY = "phone"
         const val ROLE_KEY = "role"
         const val IS_LOGGED_IN_KEY = "isLoggedIn"
     }
 
-    fun saveLoginDetails(username: String, password: String, role: String) {
+    fun saveLoginDetails(username: String, password: String, role: String, email: String, phone: String) {
         val editor = sharedPref.edit()
         editor.putString(USERNAME_KEY, username)
         editor.putString(PASSWORD_KEY, password)
         editor.putString(ROLE_KEY, role)
+        editor.putString(EMAIL_KEY, email)
+        editor.putString(PHONE_KEY, phone)
         editor.putBoolean(IS_LOGGED_IN_KEY, true)
         editor.apply()
     }
@@ -35,5 +39,17 @@ class SharedPreferenceManager(context: Context) {
         editor.remove(ROLE_KEY)
         editor.putBoolean(IS_LOGGED_IN_KEY, false)
         editor.apply()
+    }
+
+    // Inside the SharedPreferenceManager class
+    fun getUserEmail(): String? {
+        return sharedPref.getString(EMAIL_KEY, null)
+    }
+    // Inside SharedPreferenceManager
+    fun getSavedUserName(): String? {
+        return sharedPref.getString(USERNAME_KEY, null)
+    }
+    fun getSavedUserPhone(): String? {
+        return sharedPref.getString(PHONE_KEY, null)
     }
 }

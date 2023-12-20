@@ -190,6 +190,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Harga :"
+        android:textSize="25dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_buy"
         app:layout_constraintStart_toStartOf="@+id/btn_buy" />
 
@@ -198,6 +199,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_blank_fragment"
+        android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_buy"
         app:layout_constraintEnd_toEndOf="@+id/btn_buy" />
 
