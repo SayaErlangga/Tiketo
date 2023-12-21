@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tugasuas.R
 import com.example.tugasuas.data.Station
 import com.example.tugasuas.databinding.FragmentHomeAdminBinding
 import com.google.firebase.firestore.FirebaseFirestore
@@ -54,6 +55,15 @@ class HomeFragmentAdmin : Fragment() {
             }
             stationAdapter.setOnItemClickListener { selectedData ->
 
+            }
+            stationAdapter.setOnEditClickListener { selectedData ->
+                val bundle = Bundle()
+                bundle.putString("stasiunAsal", selectedData.stasiunAsal)
+                bundle.putString("stasiunTujuan", selectedData.stasiunTujuan)
+                bundle.putString("harga", selectedData.harga)
+                bundle.putString("id", selectedData.id)
+                // Use the NavController to navigate with the created bundle
+                findNavController().navigate(R.id.action_homeFragmentAdmin_to_editFragment, bundle)
             }
             rvStasiun.layoutManager = LinearLayoutManager(context)
             rvStasiun.adapter = stationAdapter

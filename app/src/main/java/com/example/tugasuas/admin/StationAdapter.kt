@@ -17,6 +17,8 @@ class StationAdapter(private val onClickMember: OnClickMember, private val isAdm
     private var onItemClick: ((Station) -> Unit)? = null
     private var onDeleteClick: ((Station) -> Unit)? = null
     private var onFavoriteClick: ((Station) -> Unit)? = null
+    private var onEditClick: ((Station) -> Unit)? = null
+
 
 
     fun setOnDeleteClickListener(listener: (Station) -> Unit) {
@@ -27,6 +29,9 @@ class StationAdapter(private val onClickMember: OnClickMember, private val isAdm
     }
     fun setOnFavoriteClickListener(listener: (Station) -> Unit) {
         onFavoriteClick = listener
+    }
+    fun setOnEditClickListener(listener: (Station) -> Unit) {
+        onEditClick = listener
     }
     inner class ItemMemberViewHolder(private val binding: StationLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,7 +52,7 @@ class StationAdapter(private val onClickMember: OnClickMember, private val isAdm
                     adminButtonLayout.visibility = View.VISIBLE
                     userFavoriteButtonLayout.visibility = View.GONE
                     btnEdit.setOnClickListener {
-                        // Handle edit button click
+                        onEditClick?.invoke(data)
                     }
 
                     btnDelete.setOnClickListener {
